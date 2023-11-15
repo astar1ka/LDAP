@@ -1,0 +1,24 @@
+{
+    "debug_mode_on": true,
+    "LDAP": {
+        "host": "ldaps://test.udsu.ru/",
+        "user": "test@test.udsu.ru",
+        "password": "P@ssw0rd",
+        "OU": "OU=test,DC=test,DC=udsu,DC=ru",
+        "domain": "test.udsu.ru"
+    },
+    "DB": {
+        "file": "./src/DB/logs.db"
+    },
+    "API": {
+        "listRequest": [
+            "test",
+            "addUser",
+            "deleteUser",
+            "newPassword"
+        ],
+        "rules": {
+
+        }
+    }
+}
