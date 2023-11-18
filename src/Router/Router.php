@@ -10,7 +10,7 @@ function Router($request, $db, $ldap){
     switch($request->method){
         case "addUser": return (new UserController($ldap))->addUser(new NewUserDTO($data));
         case "deleteUser": return (new UserController($ldap))->deleteUser(new UserDTO($data));
-        case "resetPassword": return (new UserController($ldap))->resetPassword(new NewPasswordDTO($data));
+        case "newPassword": return (new UserController($ldap))->resetPassword(new NewPasswordDTO($data));
         }
     return null;
 }

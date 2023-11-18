@@ -1,18 +1,17 @@
 {
     "debug_mode_on": true,
     "LDAP": {
-        "host": "ldaps://test.udsu.ru/",
-        "user": "test@test.udsu.ru",
-        "password": "P@ssw0rd",
-        "OU": "OU=test,DC=test,DC=udsu,DC=ru",
-        "domain": "test.udsu.ru"
+        "host": "ldaps://localhost/",
+        "user": "user",
+        "password": "password",
+        "OU": "OU=ou,DC=dc,DC=dc,DC=dc",
+        "domain": "domain.local"
     },
     "DB": {
         "file": "./src/DB/logs.db"
     },
     "API": {
         "listRequest": [
-            "test",
             "addUser",
             "deleteUser",
             "newPassword"

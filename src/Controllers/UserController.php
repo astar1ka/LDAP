@@ -18,7 +18,7 @@ class UserController{
         return $this->UserService->deleteUser($userDTO);
     }
 
-    public function resetPassword($newPasswordDTO) {
+    public function newPassword($newPasswordDTO) {
         return $this->UserService->newPassword($newPasswordDTO);
     }
 }
