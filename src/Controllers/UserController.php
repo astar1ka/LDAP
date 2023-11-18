@@ -1,23 +1,24 @@
 <?php
 
+require('./src/Services/UserService.php');
+
 class UserController{
 
     private $LDAP;
 
     function __construct($ldap){
-        $this->LDAP = $ldap;
+        $this->UserService = new UserService($ldap);
     }
 
     public function addUser($newUserDTO) {
-        return $this->LDAP->addUser($newUserDTO);
+        return $this->UserService->addUser($newUserDTO);
     }
 
     public function deleteUser($userDTO) {
-        return $this->LDAP->deleteUser($userDTO);
+        return $this->UserService->deleteUser($userDTO);
     }
 
     public function resetPassword($newPasswordDTO) {
-        return $this->LDAP->newPassword($newPasswordDTO);
+        return $this->UserService->newPassword($newPasswordDTO);
     }
-
 }

@@ -4,35 +4,40 @@ class UserService{
 
     function __construct($ldap){
         $this->ldap = $ldap;
-        $this->config = $this->ldap->getConfig();
+    }
+
+    private function randomPassword(){
+        return crypt(rand() . rand() . rand(), rand(). rand() . rand());
+    }
+
+    private function concatName($name, $patronymic = null, $lastName = null){
+        $result = $name;
+        if ($patronymic) $result = $result . " " . $patronymic;
+        if ($lastName) $result = $lastName . " " . $result;
+        return $result;
     }
 
     function addUser(NewUserDTO $user){
 
-        $userCN = "CN=" . $user->getLogin() . "," . $this->config["OU"];
-
-        if ($user->getPatronymic()) $givenName = $user->getFirstName() . " " . $user->getPatronymic();
-        else $givenName = $user->getFirstName();
-        if ($user->getLastName()) $displayName = $user->getLastName() . $givenName;
-        else $displayName = $givenName;
+        $userCN = $this->ldap->formatUserLogin($user->getLogin());
 
         $userData = [
-            "cn" => $user->getLogin(),
-            "displayName" => $displayName,
-            "givenName" => $givenName,
+            "cn" => $userCN,
+            "displayName" => $this->concatName($user->getName(), $user->getPatronymic(), $user->getLastName()),
+            "givenName" => $this->concatName($user->getName(), $user->getPatronymic()),
             "objectclass" => ["person","organizationalPerson","user"],
-            "userPrincipalName" => $userDTO->getLogin() . "@" . $this->config["domain"],
+            "userPrincipalName" => $userDTO->getLogin() . "@" . $this->ldap->getDomain(),
             "sAMAccountName" => $userDTO->getLogin(),
             "pwdLastSet" => 0,
-            "scriptPath" => $this->config["scriptPath"];
+            "scriptPath" => $this->ldap->getScriptPath();
         ];
 
         if ($this->ldap->addUser($userCN, $userData)) {
-            if ($this->ldap->resetPassword($userCN)) 
-                if $this->ldap->enableUser($userCN)
+            if ($this->ldap->setPassword($userCN, $this->randomPassword() . "$%$104" . $this->randomPassword())) 
+                if $this->ldap->enableUser($userCN);
                 return [
                     "login" => $user->getLogin(),
-                    "domain" => $this->config["domain"]
+                    "domain" => $this->ldap->getDomain()
                 ];
         };
 
@@ -40,7 +45,7 @@ class UserService{
     }
 
     function setPassword(NewPasswordDTO $user){
-        $userCN = "CN=" . $user->getLogin() . "," . $this->config["OU"];
+        $userCN = $this->ldap->formatUserLogin($user->getLogin());
         if ($this->ldap->setPassword($userCN, $user->getPassword())){
             return true;
         }
@@ -48,24 +53,24 @@ class UserService{
     }
 
     function deleteUser(DeleteUserDTO $user){
-        $userCN = "CN=" . $user->getLogin() . "," . $this->config["OU"];
-        if ($this->ldap->enableUser($userCN)) return true;
+        $userCN = $this->ldap->formatUserLogin($user->getLogin());
+        if ($this->ldap->disableUser($userCN)) return true;
         return null;
     }
 
 
-    function setUserName(SetUserNameDTO $user){
-        $userCN = "CN=" . $user->getLogin() . "," . $this->config["OU"];
+    /*function setUserName(SetUserNameDTO $user){
+        $userCN = $this->ldap->formatUserLogin($user->getLogin());
         $userData = [];
         if ($this->ldap->setData($userCN, $userData)) return true;
         return null;
-    }
+    }*/
 
-    function login(LoginDTO $user){
-        $userCN = "CN=" . $user->getLogin() . "," . $this->config["OU"];
+    /*function login(LoginDTO $user){
+        $userCN = $this->ldap->formatUserLogin($user->getLogin());
         if ($this->ldap->validatePassword($userCN, $user)){
             return md5(random_bytes(25));
         }
         return null;
-    }
+    }*/
 }

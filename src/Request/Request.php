@@ -35,13 +35,6 @@ class Request{
         }
     }
 
-    function getDTO(){
-            switch ($this->method){
-                case 'addUser': return new AddUserRequestDTO($this->data);
-                case 'resetPassword': return new ResetPasswordRequestDTO($this->data);
-            }
-    }
-
     function getData(){
         return $this->data;
     }
